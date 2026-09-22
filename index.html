@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Enlaces</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+      padding: 20px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    h2 { text-align: center; color: #4CAF50; }
+    label { font-weight: bold; display: block; margin-top: 15px; }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #333;
+      background: #222;
+      color: #fff;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover { background-color: #45a049; }
+    #resultado {
+      margin-top: 20px;
+      background: #1e1e1e;
+      padding: 15px;
+      border-radius: 5px;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Generador de Enlaces</h2>
+
+  <label for="videoUrl">Enlace del Video (Redirección final):</label>
+  <input type="text" id="videoUrl" placeholder="https://ejemplo.com/video">
+
+  <label for="adUrl">Enlace del Anuncio (Primer clic):</label>
+  <input type="text" id="adUrl" placeholder="https://ejemplo.com/anuncio">
+
+  <label for="tgUrl">Enlace de Telegram (Opcional):</label>
+  <input type="text" id="tgUrl" placeholder="https://t.me/tu_canal">
+
+  <button onclick="generarEnlace()">Generar Enlace</button>
+
+  <div id="resultado" style="display:none;">
+    <p><strong>Enlace Generado:</strong></p>
+    <a id="linkFinal" href="#" target="_blank" style="color: #64B5F6;"></a>
+  </div>
+
+  <script>
+    function generarEnlace() {
+      const video = document.getElementById('videoUrl').value.trim();
+      const ad = document.getElementById('adUrl').value.trim();
+      const tg = document.getElementById('tgUrl').value.trim();
+
+      if (!video) {
+        alert('Por favor ingresa al menos el enlace del video.');
+        return;
+      }
+
+      const baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+      const enlaceFinal = `${baseUrl}/player.html?video=${encodeURIComponent(video)}&ad=${encodeURIComponent(ad)}&tg=${encodeURIComponent(tg)}`;
+
+      document.getElementById('linkFinal').href = enlaceFinal;
+      document.getElementById('linkFinal').textContent = enlaceFinal;
+      document.getElementById('resultado').style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
