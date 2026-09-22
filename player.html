@@ -3,120 +3,118 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reproductor</title>
+  <title>Facebook</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body, html {
-      width: 100%;
-      height: 100%;
-      background-color: #f5f6f8;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    body {
+      background-color: #f4f5f8;
+      margin: 0;
+      padding: 20px 15px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-top: 30px;
     }
-    .player-card {
+
+    /* Contenedor del video falso */
+    .video-container {
       position: relative;
-      width: 90%;
-      max-width: 500px;
-      height: 280px;
-      background-color: #000;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      overflow: hidden;
-    }
-    #clickOverlay {
-      position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.75);
-      z-index: 10;
+      max-width: 450px;
+      height: 250px;
+      background-color: #000000;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       display: flex;
       justify-content: center;
       align-items: center;
       cursor: pointer;
+      overflow: hidden;
     }
-    .play-btn-red {
-      width: 68px;
-      height: 48px;
+
+    /* Botón rojo de Play central */
+    .play-button {
+      width: 65px;
+      height: 65px;
       background-color: #ff0000;
-      border-radius: 12px;
+      border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s;
     }
+
+    .play-button:active {
+      transform: scale(0.92);
+    }
+
+    /* Triángulo blanco del play */
     .play-icon {
       width: 0;
       height: 0;
-      border-top: 10px solid transparent;
-      border-bottom: 10px solid transparent;
-      border-left: 18px solid #ffffff;
-      margin-left: 3px;
+      border-top: 13px solid transparent;
+      border-bottom: 13px solid transparent;
+      border-left: 22px solid #ffffff;
+      margin-left: 5px;
     }
-    iframe { width: 100%; height: 100%; border: none; }
-    .telegram-btn {
+
+    /* Botón azul de Telegram */
+    .btn-telegram {
       margin-top: 20px;
-      display: inline-block;
       background-color: #0088cc;
       color: #ffffff;
-      font-size: 16px;
-      font-weight: 600;
-      padding: 12px 32px;
+      padding: 12px 28px;
       border-radius: 25px;
+      font-size: 15px;
+      font-weight: bold;
       text-decoration: none;
-      box-shadow: 0 3px 8px rgba(0,136,204,0.3);
-      transition: background-color 0.2s;
+      box-shadow: 0 2px 8px rgba(0, 136, 204, 0.3);
+      display: inline-block;
     }
-    .telegram-btn:hover { background-color: #0077b5; }
   </style>
 </head>
 <body>
 
-  <div class="player-card">
-    <div id="clickOverlay" onclick="abrirAnuncioYMostrarVideo()">
-      <div class="play-btn-red">
-        <div class="play-icon"></div>
-      </div>
+  <!-- Reproductor Falso -->
+  <div class="video-container" onclick="manejadorReproducir()">
+    <div class="play-button">
+      <div class="play-icon"></div>
     </div>
-    <iframe id="videoFrame" src="about:blank" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
   </div>
 
-  <a id="telegramLink" href="#" target="_blank" class="telegram-btn">
-    Más vídeos en Telegram
-  </a>
+  <!-- Botón Telegram -->
+  <a id="telegramBtn" href="#" class="btn-telegram">Más vídeos en Telegram</a>
 
   <script>
-    // ========================================================
-    // ▼▼▼ PON AQUÍ TU ENLACE DE TELEGRAM PREDETERMINADO ▼▼▼
-    // ========================================================
-    const LINK_TELEGRAM_PREDETERMINADO = "https://t.me/papasfritasssss";
-    // ========================================================
-
-    // Leer variables del enlace ?vid=...&ad=...
     const params = new URLSearchParams(window.location.search);
-    const videoUrl = params.get('vid');
+    const videoUrl = params.get('video');
     const adUrl = params.get('ad');
+    const tgUrl = params.get('tg');
 
-    if (videoUrl) {
-      document.getElementById('videoFrame').src = videoUrl;
+    // Configurar enlace de Telegram si existe
+    if (tgUrl) {
+      document.getElementById('telegramBtn').href = tgUrl;
+    } else {
+      document.getElementById('telegramBtn').href = 'https://t.me';
     }
 
-    // Asignar el Telegram fijo
-    document.getElementById('telegramLink').href = LINK_TELEGRAM_PREDETERMINADO;
+    // Contador de clics guardado en memoria de sesión
+    let clics = parseInt(sessionStorage.getItem('clicsVideo') || '0');
 
-    let anuncioAbierto = false;
-
-    function abrirAnuncioYMostrarVideo() {
-      if (adUrl && !anuncioAbierto) {
-        window.open(adUrl, '_blank');
-        anuncioAbierto = true;
+    function manejadorReproducir() {
+      if (adUrl && clics === 0) {
+        clics = 1;
+        sessionStorage.setItem('clicsVideo', '1');
+        window.location.href = adUrl; // Primer clic: manda al anuncio
+      } else {
+        if (videoUrl) {
+          window.location.href = videoUrl; // Segundo clic: manda al video
+        } else {
+          alert('No se configuró el enlace del video.');
+        }
       }
-      document.getElementById('clickOverlay').style.display = 'none';
     }
   </script>
+
 </body>
 </html>
