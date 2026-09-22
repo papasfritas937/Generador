@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reproductor</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body, html {
+      width: 100%;
+      height: 100%;
+      background-color: #f5f6f8;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 30px;
+    }
+    .player-card {
+      position: relative;
+      width: 90%;
+      max-width: 500px;
+      height: 280px;
+      background-color: #000;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      overflow: hidden;
+    }
+    #clickOverlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+    .play-btn-red {
+      width: 68px;
+      height: 48px;
+      background-color: #ff0000;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .play-icon {
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-left: 18px solid #ffffff;
+      margin-left: 3px;
+    }
+    iframe { width: 100%; height: 100%; border: none; }
+    .telegram-btn {
+      margin-top: 20px;
+      display: inline-block;
+      background-color: #0088cc;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 12px 32px;
+      border-radius: 25px;
+      text-decoration: none;
+      box-shadow: 0 3px 8px rgba(0,136,204,0.3);
+      transition: background-color 0.2s;
+    }
+    .telegram-btn:hover { background-color: #0077b5; }
+  </style>
+</head>
+<body>
+
+  <div class="player-card">
+    <div id="clickOverlay" onclick="abrirAnuncioYMostrarVideo()">
+      <div class="play-btn-red">
+        <div class="play-icon"></div>
+      </div>
+    </div>
+    <iframe id="videoFrame" src="about:blank" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
+  </div>
+
+  <a id="telegramLink" href="#" target="_blank" class="telegram-btn">
+    Más vídeos en Telegram
+  </a>
+
+  <script>
+    // ========================================================
+    // ▼▼▼ PON AQUÍ TU ENLACE DE TELEGRAM PREDETERMINADO ▼▼▼
+    // ========================================================
+    const LINK_TELEGRAM_PREDETERMINADO = "https://t.me/papasfritasssss";
+    // ========================================================
+
+    // Leer variables del enlace ?vid=...&ad=...
+    const params = new URLSearchParams(window.location.search);
+    const videoUrl = params.get('vid');
+    const adUrl = params.get('ad');
+
+    if (videoUrl) {
+      document.getElementById('videoFrame').src = videoUrl;
+    }
+
+    // Asignar el Telegram fijo
+    document.getElementById('telegramLink').href = LINK_TELEGRAM_PREDETERMINADO;
+
+    let anuncioAbierto = false;
+
+    function abrirAnuncioYMostrarVideo() {
+      if (adUrl && !anuncioAbierto) {
+        window.open(adUrl, '_blank');
+        anuncioAbierto = true;
+      }
+      document.getElementById('clickOverlay').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
